@@ -1,43 +1,35 @@
 package restaurant.com.orderservice.order.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
+import restaurant.com.orderservice.orderInfo.OrderInfo;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
 @Entity
-@Table(name = "`order`")
+@Table(name="`order`")
 public class Order {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private LocalDateTime orderDate;
+
+    private LocalDateTime finishDate;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @Column(nullable = true)
-    private LocalDateTime completedAt;
+    private UUID waiterId;
 
     @Column(nullable = false)
-    private BigDecimal price;
+    private Long restaurantId;
 
-    @Column(nullable = false)
-    LocalDateTime createdAt;
+    private UUID clientId;
 
-    private UUID waiter;
-
-    @Transient
-    private List<UUID> menuItem;
+    @OneToMany(mappedBy = "order")
+    private List<OrderInfo> orderInfo = new ArrayList<>();
 }

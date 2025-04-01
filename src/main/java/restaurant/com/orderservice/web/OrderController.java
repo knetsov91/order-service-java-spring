@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.model.OrderStatus;
 import restaurant.com.orderservice.order.service.OrderService;
+import restaurant.com.orderservice.web.dto.CreateOrderRequest;
 import restaurant.com.orderservice.web.dto.OrderResponse;
 import restaurant.com.orderservice.web.mapper.DtoMapper;
 import java.util.List;
@@ -25,5 +26,12 @@ public class OrderController {
         List<OrderResponse> orderResponses = DtoMapper.mapListOrderToListOrderResponse(allOrders);
 
         return ResponseEntity.ok(orderResponses);
+    }
+
+    @PostMapping
+    public ResponseEntity createOrder(@RequestBody CreateOrderRequest createOrderRequest) {
+
+        orderService.createOrder(createOrderRequest);
+        return ResponseEntity.ok().build();
     }
 }

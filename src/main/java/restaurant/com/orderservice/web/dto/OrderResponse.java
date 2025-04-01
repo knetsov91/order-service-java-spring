@@ -9,7 +9,7 @@ import restaurant.com.orderservice.order.model.OrderStatus;
 @Data
 public class OrderResponse {
 
-    private Long id;
+    private Long orderId;
 
     private LocalDateTime orderDate;
 

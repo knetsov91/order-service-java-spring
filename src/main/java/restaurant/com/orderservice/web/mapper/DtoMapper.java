@@ -5,7 +5,7 @@ import restaurant.com.orderservice.web.dto.OrderInfoResponse;
 
 public class DtoMapper {
 
-    public static OrderInfoResponse mapOrderToOrderResponse(OrderInfo order) {
+    public static OrderInfoResponse mapOrderInfoToOrderInfoResponse(OrderInfo order) {
         OrderInfoResponse orderInfoResponse = new OrderInfoResponse();
         orderInfoResponse.setPrice(order.getPrice());
         orderInfoResponse.setQuantity(order.getQuantity());

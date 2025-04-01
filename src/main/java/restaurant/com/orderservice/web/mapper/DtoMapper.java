@@ -51,4 +51,14 @@ public class DtoMapper {
 
         return orderInfo;
     }
+
+    public static List<OrderResponse> mapListOrderToListOrderResponse(List<Order> orders) {
+        List<OrderResponse> orderResponses = new ArrayList<>();
+        orders.forEach(order -> {
+            OrderResponse orderResponse = DtoMapper.mapOrderListToOrderResponseList(order, order.getOrderInfo());
+            orderResponses.add(orderResponse);
+
+        });
+        return orderResponses;
+    }
 }

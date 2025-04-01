@@ -2,9 +2,9 @@ package restaurant.com.orderservice.web.mapper;
 
 import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.orderInfo.OrderInfo;
+import restaurant.com.orderservice.web.dto.CreateOrderRequest;
 import restaurant.com.orderservice.web.dto.OrderInfoResponse;
 import restaurant.com.orderservice.web.dto.OrderResponse;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class DtoMapper {
 
     public static OrderResponse mapOrderToOrderResponse(Order order) {
         OrderResponse orderResponse = new OrderResponse();
-        orderResponse.setId(order.getId());
+        orderResponse.setOrderId(order.getId());
         orderResponse.setOrderDate(order.getOrderDate());
         orderResponse.setOrderStatus(order.getOrderStatus());
         orderResponse.setFinishDate(order.getFinishDate());
@@ -39,8 +39,16 @@ public class DtoMapper {
             orderResponseList.add(orderInfoResponse);
         }
         OrderResponse orderResponse = mapOrderToOrderResponse(order);
-
         orderResponse.setOrderInfoResponses(orderResponseList);
         return orderResponse;
+    }
+
+    public static OrderInfo mapCreateOrderRequestToOrderInfo(CreateOrderRequest createOrderRequest) {
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setMenuItemId(createOrderRequest.getMenuItemId());
+        orderInfo.setPrice(createOrderRequest.getPrice());
+        orderInfo.setQuantity(createOrderRequest.getQuantity());
+
+        return orderInfo;
     }
 }

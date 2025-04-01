@@ -7,7 +7,6 @@ import restaurant.com.orderservice.order.model.OrderStatus;
 import restaurant.com.orderservice.order.service.OrderService;
 import restaurant.com.orderservice.web.dto.OrderResponse;
 import restaurant.com.orderservice.web.mapper.DtoMapper;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,13 +22,7 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<List<OrderResponse>> getOrders(@RequestParam(name="type", required = false) OrderStatus orderStatus) {
         List<Order> allOrders = orderService.getAllOrders();
-        List<OrderResponse> orderResponses = new ArrayList<>();
-        allOrders.forEach(order -> {
-
-            OrderResponse orderResponse = DtoMapper.mapOrderListToOrderResponseList(order, order.getOrderInfo());
-            orderResponses.add(orderResponse);
-
-        });
+        List<OrderResponse> orderResponses = DtoMapper.mapListOrderToListOrderResponse(allOrders);
 
         return ResponseEntity.ok(orderResponses);
     }

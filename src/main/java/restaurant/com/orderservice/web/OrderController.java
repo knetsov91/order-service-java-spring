@@ -1,5 +1,6 @@
 package restaurant.com.orderservice.web;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import restaurant.com.orderservice.order.model.Order;
@@ -32,6 +33,6 @@ public class OrderController {
     public ResponseEntity createOrder(@RequestBody CreateOrderRequest createOrderRequest) {
 
         orderService.createOrder(createOrderRequest);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

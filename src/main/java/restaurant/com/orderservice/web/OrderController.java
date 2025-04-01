@@ -35,4 +35,11 @@ public class OrderController {
         orderService.createOrder(createOrderRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @PutMapping("{orderId}/complete")
+    public ResponseEntity completeOrder(@PathVariable Long orderId) {
+        orderService.completeOrder(orderId);
+
+        return ResponseEntity.ok().build();
+    }
 }

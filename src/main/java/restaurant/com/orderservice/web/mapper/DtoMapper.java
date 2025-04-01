@@ -3,6 +3,7 @@ package restaurant.com.orderservice.web.mapper;
 import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.orderInfo.OrderInfo;
 import restaurant.com.orderservice.web.dto.CreateOrderRequest;
+import restaurant.com.orderservice.web.dto.OrderInfoRequest;
 import restaurant.com.orderservice.web.dto.OrderInfoResponse;
 import restaurant.com.orderservice.web.dto.OrderResponse;
 import java.util.ArrayList;
@@ -43,8 +44,8 @@ public class DtoMapper {
         return orderResponse;
     }
 
-    public static OrderInfo mapCreateOrderRequestToOrderInfo(CreateOrderRequest createOrderRequest) {
-        OrderInfo orderInfo = new OrderInfo();
+    public static OrderInfoRequest mapCreateOrderRequestToOrderInfo(CreateOrderRequest createOrderRequest) {
+        OrderInfoRequest orderInfo = new OrderInfoRequest();
         orderInfo.setMenuItemId(createOrderRequest.getMenuItemId());
         orderInfo.setPrice(createOrderRequest.getPrice());
         orderInfo.setQuantity(createOrderRequest.getQuantity());
@@ -60,5 +61,15 @@ public class DtoMapper {
 
         });
         return orderResponses;
+    }
+
+    public static OrderInfoRequest mapCreateOrderRequestToOrderInfoRequest(CreateOrderRequest createOrderRequest) {
+        OrderInfoRequest orderInfoRequest = new OrderInfoRequest();
+        orderInfoRequest.setMenuItemId(createOrderRequest.getMenuItemId());
+        orderInfoRequest.setPrice(createOrderRequest.getPrice());
+        orderInfoRequest.setQuantity(createOrderRequest.getQuantity());
+
+        return orderInfoRequest;
+
     }
 }

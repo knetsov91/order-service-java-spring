@@ -32,7 +32,11 @@ public class ControllerException {
 
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler(OrderNotFoundException.class)
-    public void orderNotFound(HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> orderNotFound(HttpServletRequest request, OrderNotFoundException e) {
         log.error("Exception in %s".formatted(request.getRequestURI()));
+        log.error(e.getMessage());
+
+        ErrorResponse errorResponse = new ErrorResponse("Order not found", 404);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 }

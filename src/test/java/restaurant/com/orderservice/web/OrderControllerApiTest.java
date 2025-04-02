@@ -7,6 +7,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import restaurant.com.orderservice.TestBuilder;
+import restaurant.com.orderservice.exception.OrderNotFoundException;
 import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.service.OrderService;
 import restaurant.com.orderservice.orderInfo.service.OrderInfoService;
@@ -65,5 +66,19 @@ class OrderControllerApiTest {
                 .andExpect(jsonPath("orderId").isNotEmpty())
         ;
         verify(orderService, times(1)).getOrderById(orderId);
+    }
+
+    @Test
+    void getRequestWithNonExistingOrderId_throwsExceptionAndReturnStatusCode500() throws Exception {
+        when(orderService.getOrderById(anyLong())).thenThrow(OrderNotFoundException.class);
+
+        MockHttpServletRequestBuilder request = get("/api/v1/orders/{orderId}", 2L);
+
+        mockMvc.perform(request)
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("message").isNotEmpty())
+                .andExpect(jsonPath("statusCode").isNotEmpty())
+                .andExpect(jsonPath("time").isNotEmpty());
+        verify(orderService, times(1)).getOrderById(anyLong());
     }
 }

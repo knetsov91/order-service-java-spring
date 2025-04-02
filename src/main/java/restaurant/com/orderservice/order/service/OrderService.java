@@ -23,7 +23,6 @@ public class OrderService {
     public OrderService(OrderRepository orderRepository, OrderFactory orderFactory) {
         this.orderRepository = orderRepository;
         this.orderFactory = orderFactory;
-
     }
 
     public List<Order> getAllOrders() {
@@ -38,7 +37,7 @@ public class OrderService {
 
     public void completeOrder(Long orderId) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order with id " + orderId + " not found"));
+                .orElseThrow(() -> new OrderNotFoundException("Order with id " + orderId + " not found"));
         order.setFinishDate(LocalDateTime.now());
         order.setOrderStatus(OrderStatus.COMPLETED);
 

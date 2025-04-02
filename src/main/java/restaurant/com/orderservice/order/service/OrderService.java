@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import restaurant.com.orderservice.exception.OrderNotFoundException;
 import restaurant.com.orderservice.exception.RestaurantNotFoundException;
+import restaurant.com.orderservice.exception.WaiterNotFoundException;
 import restaurant.com.orderservice.factory.OrderFactory;
 import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.model.OrderStatus;
@@ -67,8 +68,10 @@ public class OrderService {
     }
 
     public List<Order> getOrdersByWaiterId(UUID waiterId) {
-        return orderRepository
-                .findByWaiterId(waiterId)
-                .orElseThrow(() -> new RuntimeException("Waiter with id " + waiterId + " not found"));
+        Optional<List<Order>> orders = orderRepository.findByWaiterId(waiterId);
+        if (orders.isEmpty() || orders.get().size() == 0) {
+            throw new WaiterNotFoundException("Waiter with id " + waiterId + " not found");
+        }
+        return orders.get();
     }
 }

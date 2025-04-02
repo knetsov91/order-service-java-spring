@@ -57,4 +57,13 @@ public class OrderController {
 
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/restaurants/{restaurantId}")
+    public ResponseEntity<List<OrderResponse>> getRestaurantOrders(@PathVariable Long restaurantId) {
+        List<Order> orders = orderService.getOrdersByRestaurantId(restaurantId);
+        List<OrderResponse> orderResponses = DtoMapper.mapListOrderToListOrderResponse(orders);
+
+        return ResponseEntity.ok(orderResponses);
+
+    }
 }

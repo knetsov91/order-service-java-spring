@@ -1,5 +1,6 @@
 package restaurant.com.orderservice.web;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +41,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity createOrder(@RequestBody CreateOrderRequest createOrderRequest) {
+    public ResponseEntity createOrder(@Valid @RequestBody CreateOrderRequest createOrderRequest) {
 
         Order order = orderService.createOrder(createOrderRequest);
         OrderInfoRequest orderInfoRequest = DtoMapper.mapCreateOrderRequestToOrderInfo(createOrderRequest);

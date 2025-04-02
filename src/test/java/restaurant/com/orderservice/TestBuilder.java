@@ -72,4 +72,13 @@ public class TestBuilder {
 
         return createOrderRequest;
     }
+
+    public static OrderInfoRequest createOrderInfoRequestFromCreateOrderRequest(CreateOrderRequest createOrderRequest) {
+        OrderInfoRequest orderInfoRequest = new OrderInfoRequest();
+        orderInfoRequest.setQuantity(1);
+        orderInfoRequest.setPrice(createOrderRequest.getPrice());
+        orderInfoRequest.setMenuItemId(createOrderRequest.getMenuItemId());
+        orderInfoRequest.setOrderId(1L);
+        return orderInfoRequest;
+    }
 }

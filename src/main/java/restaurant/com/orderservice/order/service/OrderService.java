@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import restaurant.com.orderservice.exception.OrderNotFoundException;
 import restaurant.com.orderservice.factory.OrderFactory;
 import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.model.OrderStatus;
@@ -47,6 +48,6 @@ public class OrderService {
     public Order getOrderById(Long orderId) {
         return orderRepository
                 .findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order with id " + orderId + " not found"));
+                .orElseThrow(() -> new OrderNotFoundException("Order with id " + orderId + " not found"));
     }
 }

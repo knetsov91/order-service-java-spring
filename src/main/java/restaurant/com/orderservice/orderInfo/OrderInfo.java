@@ -29,7 +29,7 @@ public class OrderInfo {
 
     private int quantity;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name="order_id", nullable=false)
+    @ManyToOne
+    @JoinColumn(name="order_id")
     private Order order;
 }

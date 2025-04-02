@@ -8,7 +8,7 @@ import restaurant.com.orderservice.factory.OrderFactory;
 import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.model.OrderStatus;
 import restaurant.com.orderservice.order.repository.OrderRepository;
-import restaurant.com.orderservice.orderInfo.service.OrderInfoService;
+import restaurant.com.orderservice.web.dto.CreateOrderRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,18 +17,24 @@ public class OrderService {
     private final Logger LOGGER = LoggerFactory.getLogger(OrderService.class);
     private final OrderRepository orderRepository;
     private OrderFactory orderFactory;
-    private OrderInfoService orderInfoService;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository, OrderFactory orderFactory, OrderInfoService orderInfoService) {
+    public OrderService(OrderRepository orderRepository, OrderFactory orderFactory) {
         this.orderRepository = orderRepository;
         this.orderFactory = orderFactory;
-        this.orderInfoService = orderInfoService;
+
     }
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
+
+    public Order createOrder(CreateOrderRequest createOrderRequest) {
+        Order order = orderFactory.createOrder(createOrderRequest);
+
+        return orderRepository.save(order);
+    }
+
     public void completeOrder(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order with id " + orderId + " not found"));

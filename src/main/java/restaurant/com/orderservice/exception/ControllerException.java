@@ -29,8 +29,11 @@ public class ControllerException {
 
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public void handle(HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handle(HttpServletRequest request) {
         log.error("MethodArgumentTypeMismatchException %s".formatted(request.getRequestURI()));
+
+        ErrorResponse errorResponse = new ErrorResponse("Invalid parameter", 400);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ResponseStatus(value = HttpStatus.NOT_FOUND)

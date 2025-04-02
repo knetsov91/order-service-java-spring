@@ -5,6 +5,7 @@ import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.model.OrderStatus;
 import restaurant.com.orderservice.orderInfo.OrderInfo;
 import restaurant.com.orderservice.web.dto.CreateOrderRequest;
+import restaurant.com.orderservice.web.dto.OrderInfoRequest;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -52,6 +53,17 @@ public class TestBuilder {
         CreateOrderRequest createOrderRequest = new CreateOrderRequest();
         createOrderRequest.setClientId(UUID.randomUUID());
         createOrderRequest.setRestaurantId(1L);
+        createOrderRequest.setClientId(UUID.randomUUID());
+        createOrderRequest.setWaiterId(UUID.randomUUID());
+        createOrderRequest.setMenuItemId(UUID.randomUUID());
+        createOrderRequest.setPrice(BigDecimal.valueOf(1L));
+        createOrderRequest.setQuantity(1);
+
+        return createOrderRequest;
+    }
+    public static CreateOrderRequest createInvalidOrderRequest() {
+        CreateOrderRequest createOrderRequest = new CreateOrderRequest();
+        createOrderRequest.setClientId(UUID.randomUUID());
         createOrderRequest.setClientId(UUID.randomUUID());
         createOrderRequest.setWaiterId(UUID.randomUUID());
         createOrderRequest.setMenuItemId(UUID.randomUUID());

@@ -8,10 +8,7 @@ import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.model.OrderStatus;
 import restaurant.com.orderservice.order.service.OrderService;
 import restaurant.com.orderservice.orderInfo.service.OrderInfoService;
-import restaurant.com.orderservice.web.dto.ChangeOrderStatusRequest;
-import restaurant.com.orderservice.web.dto.CreateOrderRequest;
-import restaurant.com.orderservice.web.dto.OrderInfoRequest;
-import restaurant.com.orderservice.web.dto.OrderResponse;
+import restaurant.com.orderservice.web.dto.*;
 import restaurant.com.orderservice.web.mapper.DtoMapper;
 import java.util.List;
 
@@ -64,6 +61,11 @@ public class OrderController {
         List<OrderResponse> orderResponses = DtoMapper.mapListOrderToListOrderResponse(orders);
 
         return ResponseEntity.ok(orderResponses);
+    }
 
+    @PostMapping("{orderId}/order-infos")
+    public ResponseEntity addOrderItemToOrder(@PathVariable Long orderId, @RequestBody OrderInfoRequest request) {
+        orderInfoService.addOrderInfoToOrder(request, orderId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

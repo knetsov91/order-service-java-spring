@@ -10,7 +10,9 @@ import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.repository.OrderRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,5 +36,17 @@ class OrderServiceTest {
         List<Order> allOrders = orderService.getAllOrders();
 
         assertEquals(allOrders.size(), 1);
+    }
+
+    @Test
+    void givenExistingOrderId_whenGetOrderById_thenReturnOrder() {
+        Order orderExpected = TestBuilder.createRandomOrder();
+
+        when(orderRepository.findById(orderExpected.getId())).thenReturn(Optional.of(orderExpected));
+
+        Order orderActual = orderService.getOrderById(orderExpected.getId());
+
+        assertEquals(orderExpected.getId(), orderActual.getId());
+        verify(orderRepository).findById(orderExpected.getId());
     }
 }

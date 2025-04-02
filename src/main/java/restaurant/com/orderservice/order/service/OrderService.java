@@ -13,6 +13,7 @@ import restaurant.com.orderservice.web.dto.ChangeOrderStatusRequest;
 import restaurant.com.orderservice.web.dto.CreateOrderRequest;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class OrderService {
@@ -58,5 +59,11 @@ public class OrderService {
     public List<Order> getOrdersByRestaurantId(Long restaurantId) {
         return orderRepository.findByRestaurantId(restaurantId)
                 .orElseThrow(() -> new RuntimeException("Restaurant with id " + restaurantId + " not found"));
+    }
+
+    public List<Order> getOrdersByWaiterId(UUID waiterId) {
+        return orderRepository
+                .findByWaiterId(waiterId)
+                .orElseThrow(() -> new RuntimeException("Waiter with id " + waiterId + " not found"));
     }
 }

@@ -1,8 +1,10 @@
 package restaurant.com.orderservice.web;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -11,10 +13,12 @@ import restaurant.com.orderservice.exception.OrderNotFoundException;
 import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.service.OrderService;
 import restaurant.com.orderservice.orderInfo.service.OrderInfoService;
+import restaurant.com.orderservice.web.dto.CreateOrderRequest;
 import java.util.ArrayList;
 import java.util.List;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -47,8 +51,7 @@ class OrderControllerApiTest {
                 .andExpect(jsonPath("$[0].orderStatus").isNotEmpty())
                 .andExpect(jsonPath("$[0].waiterId").isNotEmpty())
                 .andExpect(jsonPath("$[0].restaurantId").isNotEmpty())
-                .andExpect(jsonPath("$[0].clientId").isNotEmpty())
-        ;
+                .andExpect(jsonPath("$[0].clientId").isNotEmpty());
 
         verify(orderService, times(1)).getAllOrders();
     }
@@ -80,5 +83,17 @@ class OrderControllerApiTest {
                 .andExpect(jsonPath("statusCode").isNotEmpty())
                 .andExpect(jsonPath("time").isNotEmpty());
         verify(orderService, times(1)).getOrderById(anyLong());
+    }
+
+    @Test
+    void postRequestWithMissingRequiredBodyField_throwsExceptionAndReturnStatusCode400() throws Exception {
+        CreateOrderRequest invalidOrderRequest = TestBuilder.createInvalidOrderRequest();
+
+        MockHttpServletRequestBuilder post = post("/api/v1/orders")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsBytes(invalidOrderRequest));
+
+        mockMvc.perform(post)
+                .andExpect(status().is4xxClientError());
     }
 }

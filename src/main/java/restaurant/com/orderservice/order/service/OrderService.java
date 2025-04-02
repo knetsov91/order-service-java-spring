@@ -54,4 +54,9 @@ public class OrderService {
                 .findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException("Order with id " + orderId + " not found"));
     }
+
+    public List<Order> getOrdersByRestaurantId(Long restaurantId) {
+        return orderRepository.findByRestaurantId(restaurantId)
+                .orElseThrow(() -> new RuntimeException("Restaurant with id " + restaurantId + " not found"));
+    }
 }

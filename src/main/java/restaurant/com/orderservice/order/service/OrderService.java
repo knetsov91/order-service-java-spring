@@ -9,6 +9,7 @@ import restaurant.com.orderservice.factory.OrderFactory;
 import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.model.OrderStatus;
 import restaurant.com.orderservice.order.repository.OrderRepository;
+import restaurant.com.orderservice.web.dto.ChangeOrderStatusRequest;
 import restaurant.com.orderservice.web.dto.CreateOrderRequest;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,11 +36,15 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public void completeOrder(Long orderId) {
+    public void changeOrderStatus(Long orderId, ChangeOrderStatusRequest changeOrderStatusRequest) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException("Order with id " + orderId + " not found"));
-        order.setFinishDate(LocalDateTime.now());
-        order.setOrderStatus(OrderStatus.COMPLETED);
+
+        OrderStatus orderStatus = changeOrderStatusRequest.getOrderStatus();
+        if (orderStatus == OrderStatus.COMPLETED || orderStatus == OrderStatus.CANCELLED) {
+            order.setFinishDate(LocalDateTime.now());
+        }
+        order.setOrderStatus(orderStatus);
 
         orderRepository.save(order);
     }

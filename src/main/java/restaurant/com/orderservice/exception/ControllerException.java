@@ -56,6 +56,15 @@ public class ControllerException {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(WaiterNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleWaiterNotFoundException(HttpServletRequest request, WaiterNotFoundException e) {
+        log.error("Exception in %s".formatted(request.getRequestURI()));
+
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), 400);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> generalHandle(HttpServletRequest request, Exception e) {

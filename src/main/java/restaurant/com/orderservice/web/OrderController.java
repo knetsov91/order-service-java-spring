@@ -8,6 +8,7 @@ import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.model.OrderStatus;
 import restaurant.com.orderservice.order.service.OrderService;
 import restaurant.com.orderservice.orderInfo.service.OrderInfoService;
+import restaurant.com.orderservice.web.dto.ChangeOrderStatusRequest;
 import restaurant.com.orderservice.web.dto.CreateOrderRequest;
 import restaurant.com.orderservice.web.dto.OrderInfoRequest;
 import restaurant.com.orderservice.web.dto.OrderResponse;
@@ -50,9 +51,9 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping("/{orderId}/complete")
-    public ResponseEntity completeOrder(@PathVariable Long orderId) {
-        orderService.completeOrder(orderId);
+    @PutMapping("/{orderId}/status")
+    public ResponseEntity changeOrderStatus(@PathVariable(name = "orderId") Long orderId, @RequestBody ChangeOrderStatusRequest changeOrderStatusRequest) {
+        orderService.changeOrderStatus(orderId, changeOrderStatusRequest);
 
         return ResponseEntity.ok().build();
     }

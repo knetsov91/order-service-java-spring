@@ -43,4 +43,10 @@ public class OrderService {
 
         orderRepository.save(order);
     }
+
+    public Order getOrderById(Long orderId) {
+        return orderRepository
+                .findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order with id " + orderId + " not found"));
+    }
 }

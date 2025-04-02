@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import restaurant.com.orderservice.TestBuilder;
+import restaurant.com.orderservice.exception.OrderNotFoundException;
 import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.repository.OrderRepository;
 import java.util.ArrayList;
@@ -48,5 +49,18 @@ class OrderServiceTest {
 
         assertEquals(orderExpected.getId(), orderActual.getId());
         verify(orderRepository).findById(orderExpected.getId());
+    }
+
+    @Test
+    void givenNonExistingOrderId_whenGetOrderById_thenThrowsException() {
+        Long orderId = 1L;
+
+        when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
+
+        OrderNotFoundException orderNotFoundException = assertThrows(OrderNotFoundException.class,
+                () -> orderService.getOrderById(orderId));
+
+        assertEquals("Order with id " + orderId + " not found", orderNotFoundException.getMessage());
+        verify(orderRepository).findById(orderId);
     }
 }

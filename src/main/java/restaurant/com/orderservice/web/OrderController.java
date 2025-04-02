@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.model.OrderStatus;
 import restaurant.com.orderservice.order.service.OrderService;
+import restaurant.com.orderservice.orderInfo.service.OrderInfoService;
 import restaurant.com.orderservice.web.dto.CreateOrderRequest;
+import restaurant.com.orderservice.web.dto.OrderInfoRequest;
 import restaurant.com.orderservice.web.dto.OrderResponse;
 import restaurant.com.orderservice.web.mapper.DtoMapper;
 import java.util.List;
@@ -16,9 +18,11 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+    private final OrderInfoService orderInfoService;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, OrderInfoService orderInfoService) {
         this.orderService = orderService;
+        this.orderInfoService = orderInfoService;
     }
 
     @GetMapping
@@ -32,11 +36,14 @@ public class OrderController {
     @PostMapping
     public ResponseEntity createOrder(@RequestBody CreateOrderRequest createOrderRequest) {
 
-        orderService.createOrder(createOrderRequest);
+        Order order = orderService.createOrder(createOrderRequest);
+        OrderInfoRequest orderInfoRequest = DtoMapper.mapCreateOrderRequestToOrderInfo(createOrderRequest);
+        orderInfoService.addOrderInfoToOrder(orderInfoRequest, order.getId());
+
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping("{orderId}/complete")
+    @PutMapping("/{orderId}/complete")
     public ResponseEntity completeOrder(@PathVariable Long orderId) {
         orderService.completeOrder(orderId);
 

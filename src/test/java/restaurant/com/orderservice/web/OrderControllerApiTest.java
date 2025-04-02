@@ -6,7 +6,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import restaurant.com.orderservice.TestBuilder;
 import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.service.OrderService;
@@ -14,6 +13,7 @@ import restaurant.com.orderservice.orderInfo.service.OrderInfoService;
 import java.util.ArrayList;
 import java.util.List;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,7 +37,7 @@ class OrderControllerApiTest {
 
         when(orderService.getAllOrders()).thenReturn(orders);
 
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/api/v1/orders");
+        MockHttpServletRequestBuilder request = get("/api/v1/orders");
 
         mockMvc.perform(request)
                 .andExpect(status().isOk())
@@ -50,5 +50,20 @@ class OrderControllerApiTest {
         ;
 
         verify(orderService, times(1)).getAllOrders();
+    }
+
+    @Test
+    void getRequestWithExistingOrderId_returnOrder() throws Exception {
+        Order order = TestBuilder.createRandomOrder();
+        Long orderId = order.getId();
+        when(orderService.getOrderById(orderId)).thenReturn(order);
+
+        MockHttpServletRequestBuilder request = get("/api/v1/orders/{orderId}", orderId);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("orderId").isNotEmpty())
+        ;
+        verify(orderService, times(1)).getOrderById(orderId);
     }
 }

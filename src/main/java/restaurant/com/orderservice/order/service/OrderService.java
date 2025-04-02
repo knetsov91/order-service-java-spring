@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import restaurant.com.orderservice.exception.OrderNotFoundException;
+import restaurant.com.orderservice.exception.RestaurantNotFoundException;
 import restaurant.com.orderservice.factory.OrderFactory;
 import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.model.OrderStatus;
@@ -13,6 +14,7 @@ import restaurant.com.orderservice.web.dto.ChangeOrderStatusRequest;
 import restaurant.com.orderservice.web.dto.CreateOrderRequest;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -57,8 +59,11 @@ public class OrderService {
     }
 
     public List<Order> getOrdersByRestaurantId(Long restaurantId) {
-        return orderRepository.findByRestaurantId(restaurantId)
-                .orElseThrow(() -> new RuntimeException("Restaurant with id " + restaurantId + " not found"));
+        Optional<List<Order>> ordersOpt = orderRepository.findByRestaurantId(restaurantId);
+        if (ordersOpt.isEmpty() || ordersOpt.get().size() == 0) {
+            throw new RestaurantNotFoundException("Restaurant with id " + restaurantId + " not found");
+        }
+        return ordersOpt.get();
     }
 
     public List<Order> getOrdersByWaiterId(UUID waiterId) {

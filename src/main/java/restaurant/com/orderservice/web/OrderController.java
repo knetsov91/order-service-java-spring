@@ -32,6 +32,12 @@ public class OrderController {
 
         return ResponseEntity.ok(orderResponses);
     }
+    @GetMapping("/{orderId}")
+    public ResponseEntity<OrderResponse> getOrder(@PathVariable Long orderId) {
+        Order order = orderService.getOrderById(orderId);
+
+        return ResponseEntity.ok(DtoMapper.mapOrderWithOrderInfoToOrderResponse(order, order.getOrderInfo()));
+    }
 
     @PostMapping
     public ResponseEntity createOrder(@RequestBody CreateOrderRequest createOrderRequest) {

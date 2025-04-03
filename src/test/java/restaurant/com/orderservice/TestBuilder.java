@@ -3,7 +3,7 @@ package restaurant.com.orderservice;
 import lombok.experimental.UtilityClass;
 import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.model.OrderStatus;
-import restaurant.com.orderservice.orderInfo.OrderInfo;
+import restaurant.com.orderservice.orderInfo.model.OrderInfo;
 import restaurant.com.orderservice.web.dto.CreateOrderRequest;
 import restaurant.com.orderservice.web.dto.OrderInfoRequest;
 import java.math.BigDecimal;
@@ -61,6 +61,7 @@ public class TestBuilder {
 
         return createOrderRequest;
     }
+
     public static CreateOrderRequest createInvalidOrderRequest() {
         CreateOrderRequest createOrderRequest = new CreateOrderRequest();
         createOrderRequest.setClientId(UUID.randomUUID());
@@ -69,6 +70,19 @@ public class TestBuilder {
         createOrderRequest.setMenuItemId(UUID.randomUUID());
         createOrderRequest.setPrice(BigDecimal.valueOf(1L));
         createOrderRequest.setQuantity(1);
+
+        return createOrderRequest;
+    }
+
+    public static CreateOrderRequest createValidOrderRequest() {
+        CreateOrderRequest createOrderRequest = new CreateOrderRequest();
+        createOrderRequest.setClientId(UUID.randomUUID());
+        createOrderRequest.setClientId(UUID.randomUUID());
+        createOrderRequest.setWaiterId(UUID.randomUUID());
+        createOrderRequest.setMenuItemId(UUID.randomUUID());
+        createOrderRequest.setPrice(BigDecimal.valueOf(1L));
+        createOrderRequest.setQuantity(1);
+        createOrderRequest.setRestaurantId(1L);
 
         return createOrderRequest;
     }

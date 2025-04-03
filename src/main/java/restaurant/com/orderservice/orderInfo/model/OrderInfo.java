@@ -1,4 +1,4 @@
-package restaurant.com.orderservice.orderInfo;
+package restaurant.com.orderservice.orderInfo.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

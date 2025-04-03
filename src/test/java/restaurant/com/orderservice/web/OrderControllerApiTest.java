@@ -169,4 +169,32 @@ class OrderControllerApiTest {
                 .andExpect(jsonPath("$[0].orderStatus").isNotEmpty())
                 .andExpect(jsonPath("$[0].orderInfoResponses").isNotEmpty());
     }
+
+    @Test
+    void getRequestForWaiterOrders_returns200WithBodyContainingDto() throws Exception {
+        UUID waiterId = UUID.randomUUID();
+        MockHttpServletRequestBuilder req = get("/api/v1/orders/waiters/{waiterId}",waiterId);
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setQuantity(1);
+        orderInfo.setPrice(BigDecimal.valueOf(11));
+        orderInfo.setMenuItemId(UUID.randomUUID());
+
+        Order order = new Order();
+        order.setOrderDate(LocalDateTime.now());
+        order.setRestaurantId(1L);
+        order.setOrderStatus(OrderStatus.PLACED);
+        order.getOrderInfo().add(orderInfo);
+
+        List<Order> orders = List.of(order);
+        List<OrderResponse> orderResponses = mapListOrderToListOrderResponse(orders);
+        when(orderService.getOrdersByWaiterId(waiterId))
+                .thenReturn(orders);
+
+        mockMvc.perform(req)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$[0].restaurantId").isNotEmpty())
+                .andExpect(jsonPath("$[0].orderDate").isNotEmpty())
+                .andExpect(jsonPath("$[0].orderInfoResponses").isNotEmpty());
+        verify(orderService, times(1)).getOrdersByWaiterId(waiterId);
+    }
 }

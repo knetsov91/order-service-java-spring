@@ -13,17 +13,23 @@ import restaurant.com.orderservice.exception.OrderNotFoundException;
 import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.model.OrderStatus;
 import restaurant.com.orderservice.order.service.OrderService;
+import restaurant.com.orderservice.orderInfo.model.OrderInfo;
 import restaurant.com.orderservice.orderInfo.service.OrderInfoService;
 import restaurant.com.orderservice.web.dto.ChangeOrderStatusRequest;
 import restaurant.com.orderservice.web.dto.CreateOrderRequest;
 import restaurant.com.orderservice.web.dto.OrderInfoRequest;
+import restaurant.com.orderservice.web.dto.OrderResponse;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static restaurant.com.orderservice.web.mapper.DtoMapper.mapCreateOrderRequestToOrderInfo;
+import static restaurant.com.orderservice.web.mapper.DtoMapper.mapListOrderToListOrderResponse;
 
 @WebMvcTest(OrderController.class)
 class OrderControllerApiTest {
@@ -134,5 +140,33 @@ class OrderControllerApiTest {
                 .andExpect(status().is2xxSuccessful());
 
         verify(orderService, times(1)).changeOrderStatus(1L, changeOrderStatusRequest);
+    }
+
+    @Test
+    void getRequestToFetchOrdersForRestaurant_returns200StatusAndBodyWithDto() throws Exception {
+        MockHttpServletRequestBuilder req = get("/api/v1/orders/restaurants/{restaurantId}", 1L);
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setQuantity(1);
+        orderInfo.setPrice(BigDecimal.valueOf(11));
+        orderInfo.setMenuItemId(UUID.randomUUID());
+
+        Order order = new Order();
+        order.setOrderDate(LocalDateTime.now());
+        order.setRestaurantId(1L);
+        order.setOrderStatus(OrderStatus.PLACED);
+        order.getOrderInfo().add(orderInfo);
+
+        List<Order> orders = List.of(order);
+        List<OrderResponse> orderResponses = mapListOrderToListOrderResponse(orders);
+
+        when(orderService.getOrdersByRestaurantId(1L))
+                .thenReturn(orders);
+
+        mockMvc.perform(req)
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$[0].orderDate").isNotEmpty())
+                .andExpect(jsonPath("$[0].restaurantId").isNotEmpty())
+                .andExpect(jsonPath("$[0].orderStatus").isNotEmpty())
+                .andExpect(jsonPath("$[0].orderInfoResponses").isNotEmpty());
     }
 }

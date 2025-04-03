@@ -14,6 +14,7 @@ import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.service.OrderService;
 import restaurant.com.orderservice.orderInfo.service.OrderInfoService;
 import restaurant.com.orderservice.web.dto.CreateOrderRequest;
+import restaurant.com.orderservice.web.dto.OrderInfoRequest;
 import java.util.ArrayList;
 import java.util.List;
 import static org.mockito.Mockito.*;
@@ -21,6 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static restaurant.com.orderservice.web.mapper.DtoMapper.mapCreateOrderRequestToOrderInfo;
 
 @WebMvcTest(OrderController.class)
 class OrderControllerApiTest {
@@ -95,5 +97,26 @@ class OrderControllerApiTest {
 
         mockMvc.perform(post)
                 .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void postRequestToCreateOrderWithValidBody_returns201Status() throws Exception {
+        CreateOrderRequest validOrderRequest = TestBuilder.createValidOrderRequest();
+        OrderInfoRequest orderInfoRequest = mapCreateOrderRequestToOrderInfo(validOrderRequest);
+        Order order = new Order();
+        order.setId(1L);
+
+        MockHttpServletRequestBuilder content = post("/api/v1/orders")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsBytes(validOrderRequest));
+
+        when(orderService.createOrder(validOrderRequest)).thenReturn(order);
+        when(orderInfoService.addOrderInfoToOrder(orderInfoRequest, order.getId())).thenReturn(any());
+
+        mockMvc.perform(content)
+                .andExpect(status().isCreated());
+
+        verify(orderService, times(1)).createOrder(validOrderRequest);
+        verify(orderInfoService, times(1)).addOrderInfoToOrder(orderInfoRequest, order.getId());
     }
 }

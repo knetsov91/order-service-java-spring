@@ -7,7 +7,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.repository.OrderRepository;
 import restaurant.com.orderservice.order.service.OrderService;
-import restaurant.com.orderservice.orderInfo.OrderInfo;
+import restaurant.com.orderservice.orderInfo.model.OrderInfo;
 import restaurant.com.orderservice.orderInfo.repository.OrderInfoRepository;
 import restaurant.com.orderservice.orderInfo.service.OrderInfoService;
 import restaurant.com.orderservice.web.dto.CreateOrderRequest;

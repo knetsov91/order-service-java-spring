@@ -1,7 +1,7 @@
 package restaurant.com.orderservice.web.mapper;
 
 import restaurant.com.orderservice.order.model.Order;
-import restaurant.com.orderservice.orderInfo.OrderInfo;
+import restaurant.com.orderservice.orderInfo.model.OrderInfo;
 import restaurant.com.orderservice.web.dto.CreateOrderRequest;
 import restaurant.com.orderservice.web.dto.OrderInfoRequest;
 import restaurant.com.orderservice.web.dto.OrderInfoResponse;

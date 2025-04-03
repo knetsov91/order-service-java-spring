@@ -3,7 +3,7 @@ package restaurant.com.orderservice.orderInfo.service;
 import org.springframework.stereotype.Service;
 import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.service.OrderService;
-import restaurant.com.orderservice.orderInfo.OrderInfo;
+import restaurant.com.orderservice.orderInfo.model.OrderInfo;
 import restaurant.com.orderservice.orderInfo.repository.OrderInfoRepository;
 import restaurant.com.orderservice.web.dto.OrderInfoRequest;
 

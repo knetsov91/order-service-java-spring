@@ -2,7 +2,7 @@ package restaurant.com.orderservice.order.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import restaurant.com.orderservice.orderInfo.OrderInfo;
+import restaurant.com.orderservice.orderInfo.model.OrderInfo;
 import java.time.LocalDateTime;
 import java.util.*;
 

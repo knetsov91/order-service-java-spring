@@ -5,13 +5,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import restaurant.com.orderservice.exception.OrderNotFoundException;
+import restaurant.com.orderservice.exception.RestaurantNotFoundException;
+import restaurant.com.orderservice.exception.WaiterNotFoundException;
+import restaurant.com.orderservice.factory.OrderFactory;
 import restaurant.com.orderservice.order.model.Order;
 import restaurant.com.orderservice.order.model.OrderStatus;
 import restaurant.com.orderservice.order.repository.OrderRepository;
+import restaurant.com.orderservice.web.dto.ChangeOrderStatusRequest;
 import restaurant.com.orderservice.web.dto.CreateOrderRequest;
-import restaurant.com.orderservice.web.dto.OrderResponse;
-import restaurant.com.orderservice.web.mapper.DtoMapper;
-
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,59 +22,56 @@ import java.util.UUID;
 public class OrderService {
     private final Logger LOGGER = LoggerFactory.getLogger(OrderService.class);
     private final OrderRepository orderRepository;
+    private OrderFactory orderFactory;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository, OrderFactory orderFactory) {
         this.orderRepository = orderRepository;
+        this.orderFactory = orderFactory;
     }
 
-    public List<OrderResponse> getAllOrders() {
-        return orderRepository
-                .findAll()
-                .stream()
-                .map(DtoMapper::mapOrderToOrderResponse)
-                .toList();
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
     }
 
-    public UUID createOrder(CreateOrderRequest createOrderRequest) {
+    public Order createOrder(CreateOrderRequest createOrderRequest) {
+        Order order = orderFactory.createOrder(createOrderRequest);
 
-        Order order = DtoMapper.mapOrderToOrderResponse(createOrderRequest);
-        orderRepository.save(order);
-        LOGGER.info("Order {} created: {}", order.getId(), order.getCreatedAt());
-        return order.getId();
+        return orderRepository.save(order);
     }
 
-    public List<OrderResponse> getWaiterOrders(UUID waiterId) {
+    public void changeOrderStatus(Long orderId, ChangeOrderStatusRequest changeOrderStatusRequest) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("Order with id " + orderId + " not found"));
 
-        Optional<List<Order>> orders = orderRepository.findByWaiter(waiterId);
-        if (orders.isEmpty()) {
-            throw new RuntimeException("Orders for [%s] not found".formatted(waiterId));
+        OrderStatus orderStatus = changeOrderStatusRequest.getOrderStatus();
+        if (orderStatus == OrderStatus.COMPLETED || orderStatus == OrderStatus.CANCELLED) {
+            order.setFinishDate(LocalDateTime.now());
         }
-        return orders
-                .get()
-                .stream()
-                .map(DtoMapper::mapOrderToOrderResponse)
-                .toList();
-
-    }
-
-    public void changeOrderStatus(UUID orderId, OrderStatus orderStatus) {
-        Optional<Order> orderOptional = orderRepository.findById(orderId);
-
-        if (orderOptional.isEmpty()) {
-            LOGGER.error("Order with id [%s] not found".formatted(orderId));
-            throw new OrderNotFoundException("Order with id [%s] not found".formatted(orderId));
-        }
-
-        Order order = orderOptional.get();
         order.setOrderStatus(orderStatus);
-        LOGGER.info("Order with id [%s] updated to %s status".formatted(orderId, orderStatus));
 
         orderRepository.save(order);
     }
 
-    public List<Order> getOrdersByStatus(OrderStatus orderStatus) {
-        List<Order> orderByStatus = orderRepository.getOrderByStatus(orderStatus);
-        return orderByStatus;
+    public Order getOrderById(Long orderId) {
+        return orderRepository
+                .findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("Order with id " + orderId + " not found"));
+    }
+
+    public List<Order> getOrdersByRestaurantId(Long restaurantId) {
+        Optional<List<Order>> ordersOpt = orderRepository.findByRestaurantId(restaurantId);
+        if (ordersOpt.isEmpty() || ordersOpt.get().size() == 0) {
+            throw new RestaurantNotFoundException("Restaurant with id " + restaurantId + " not found");
+        }
+        return ordersOpt.get();
+    }
+
+    public List<Order> getOrdersByWaiterId(UUID waiterId) {
+        Optional<List<Order>> orders = orderRepository.findByWaiterId(waiterId);
+        if (orders.isEmpty() || orders.get().size() == 0) {
+            throw new WaiterNotFoundException("Waiter with id " + waiterId + " not found");
+        }
+        return orders.get();
     }
 }

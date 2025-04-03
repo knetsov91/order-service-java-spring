@@ -9,7 +9,9 @@ import restaurant.com.orderservice.TestBuilder;
 import restaurant.com.orderservice.exception.OrderNotFoundException;
 import restaurant.com.orderservice.factory.OrderFactory;
 import restaurant.com.orderservice.order.model.Order;
+import restaurant.com.orderservice.order.model.OrderStatus;
 import restaurant.com.orderservice.order.repository.OrderRepository;
+import restaurant.com.orderservice.web.dto.ChangeOrderStatusRequest;
 import restaurant.com.orderservice.web.dto.CreateOrderRequest;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,5 +89,19 @@ class OrderServiceTest {
         assertEquals(expectedOrder.getFinishDate(), orderActual.getFinishDate());
 
         verify(orderRepository, times(1)).save(expectedOrder);
+    }
+
+    @Test
+    void givenValidOrderIdAndStatusPlaced_whenChangeOrderStatus_thenOrderStatusChangedToCancelled() {
+        ChangeOrderStatusRequest changeOrderStatusRequest = new ChangeOrderStatusRequest();
+        changeOrderStatusRequest.setOrderStatus(OrderStatus.PLACED);
+        Long orderId = 1L;
+
+        Order order = new Order();
+        when(orderRepository.findById(orderId)).thenReturn(Optional.of(order));
+
+        orderService.changeOrderStatus(orderId, changeOrderStatusRequest);
+
+        verify(orderRepository, times(1)).save(order);
     }
 }

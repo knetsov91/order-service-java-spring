@@ -11,15 +11,16 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import restaurant.com.orderservice.TestBuilder;
 import restaurant.com.orderservice.exception.OrderNotFoundException;
 import restaurant.com.orderservice.order.model.Order;
+import restaurant.com.orderservice.order.model.OrderStatus;
 import restaurant.com.orderservice.order.service.OrderService;
 import restaurant.com.orderservice.orderInfo.service.OrderInfoService;
+import restaurant.com.orderservice.web.dto.ChangeOrderStatusRequest;
 import restaurant.com.orderservice.web.dto.CreateOrderRequest;
 import restaurant.com.orderservice.web.dto.OrderInfoRequest;
 import java.util.ArrayList;
 import java.util.List;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static restaurant.com.orderservice.web.mapper.DtoMapper.mapCreateOrderRequestToOrderInfo;
@@ -118,5 +119,20 @@ class OrderControllerApiTest {
 
         verify(orderService, times(1)).createOrder(validOrderRequest);
         verify(orderInfoService, times(1)).addOrderInfoToOrder(orderInfoRequest, order.getId());
+    }
+
+    @Test
+    void putRequestToUpdateOrderStatus_returns200Status() throws Exception {
+        ChangeOrderStatusRequest changeOrderStatusRequest = new ChangeOrderStatusRequest();
+        changeOrderStatusRequest.setOrderStatus(OrderStatus.PLACED);
+
+        MockHttpServletRequestBuilder req = put("/api/v1/orders/{orderId}/status", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsBytes(changeOrderStatusRequest));
+
+        mockMvc.perform(req)
+                .andExpect(status().is2xxSuccessful());
+
+        verify(orderService, times(1)).changeOrderStatus(1L, changeOrderStatusRequest);
     }
 }

@@ -5,5 +5,4 @@
 Spring Data with Hibernate ORM is used for interaction with database. 
 </p>
 <h2>ER Diagram</h2>
-<img  src="./er-diagram.png">
 <img src="./order-service-er.png" />

@@ -18,7 +18,7 @@ deployment.
 <p>More details</p>
 <ul>
     <li>Database </span><a href="./docs/database/database.md">Link</a></li>
-    <li>Api </span><a href=".//docs/api/api.md">Link</a></li>
+    <li>Api </span><a href="./docs/api/api.md">Link</a></li>
     <li>Security </span><a href="./docs/security/security.md">Link</a></li>
-    <li>Tests </span><a href=".//docs/tests/test.md">Link</a></li>
+    <li>Tests </span><a href="./docs/tests/test.md">Link</a></li>
 </ul>

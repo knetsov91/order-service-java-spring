@@ -11,6 +11,6 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/restaurant-orders
+    url: jdbc:postgresql://${POSTGRES_HOST}:5432/restaurant-orders
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}

@@ -3,8 +3,9 @@ version: "3"
 services:
   postgres_db:
     image: postgres
+    container_name: order_svc_db
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -12,7 +13,12 @@ services:
     volumes:
       - restaurant_db:/var/lib/postgresql
       - restaurant_db_data:/var/lib/postgresql/data
-
+      - ./sql:/docker-entrypoint-initdb.d
+    networks:
+      - order_svc_network
 volumes:
   restaurant_db:
   restaurant_db_data:
+networks:
+  order_svc_network:
+    driver: bridge
